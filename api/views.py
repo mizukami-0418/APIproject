@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .models import User
+from .serializers import UserSerializer
 
 
 class HelloWorldAPIViews(APIView):
@@ -15,15 +16,11 @@ class HelloWorldAPIViews(APIView):
         return Response({"message": message})
     
     def post(self, request):
-        # エラーハンドリング
-        if not request.data:
-            return Response(
-                {"error": "No data provided."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        # POSTリクエストで送信されたデータからusernameを取得
-        username = request.data.get('username', None)
-        if username:
+        serializer = UserSerializer(data=request.data)
+        
+        # データのバリデーション
+        if serializer.is_valid():
+            username = serializer.validated_data['username']
             user = User.objects.create(username=username)
             user.save()
             
@@ -33,6 +30,6 @@ class HelloWorldAPIViews(APIView):
             )
         else:
             return Response(
-                {"error": "Username is required."},
+                {"error": serializer.errors},
                 status=status.HTTP_400_BAD_REQUEST
             )
