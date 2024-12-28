@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',  # DRFの追加
+    'api',  # 作成したアプリの追加
 ]
 
 MIDDLEWARE = [
